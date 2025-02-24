@@ -1,0 +1,12 @@
+# Example tenant-specific configuration
+# Copy this file and rename it to tenant-{tenantId}.yml for each tenant
+saml:
+  tenants:
+    tenant1:
+      idp-metadata-url: https://tenant1.idp.com/metadata
+      entity-id: https://tenant1.app.maxcomsc.com
+      acs-url: https://tenant1.app.maxcomsc.com/login/saml2/sso/hazcom
+      keystore-path: /app/saml/tenant1/keystore.jks
+      keystore-password: ${TENANT1_KEYSTORE_PASSWORD}
+      private-key-alias: tenant1
+      private-key-password: ${TENANT1_PRIVATE_KEY_PASSWORD}

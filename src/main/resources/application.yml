@@ -1,0 +1,26 @@
+server:
+  port: 8080
+
+spring:
+  security:
+    saml2:
+      relyingparty:
+        registration:
+          hazcom:
+            signing:
+              credentials:
+                - private-key-location: classpath:saml/private.key
+                  certificate-location: classpath:saml/public.cer
+
+  session:
+    timeout: ${SESSION_TIMEOUT:3600}
+    cookie:
+      name: ${SESSION_COOKIE_NAME:HAZCOM_SESSION}
+      secure: true
+      http-only: true
+
+logging:
+  level:
+    root: INFO
+    com.hazcom: DEBUG
+    org.springframework.security: DEBUG

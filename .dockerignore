@@ -1,0 +1,23 @@
+# Git
+.git
+.gitignore
+
+# Maven
+target/
+!target/*.jar
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+
+# Logs
+*.log
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# Keep SAML certificates for build
+# src/main/resources/saml/*.key
+# src/main/resources/saml/*.cer

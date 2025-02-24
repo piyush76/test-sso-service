@@ -1,0 +1,28 @@
+services:
+  sso-service:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./src/main/resources/saml:/app/src/main/resources/saml:ro
+    env_file:
+      - .env
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SAML_IDP_METADATA_URL=${SAML_IDP_METADATA_URL}
+      - SAML_SP_ENTITY_ID=${SAML_SP_ENTITY_ID}
+      - SAML_SP_ACS_URL=${SAML_SP_ACS_URL}
+      - SAML_KEYSTORE_PATH=/app/saml/keystore.jks
+      - SAML_KEYSTORE_PASSWORD=${SAML_KEYSTORE_PASSWORD:-changeit}
+      - SAML_PRIVATE_KEY_ALIAS=${SAML_PRIVATE_KEY_ALIAS:-hazcom}
+      - SAML_PRIVATE_KEY_PASSWORD=${SAML_PRIVATE_KEY_PASSWORD:-changeit}
+      - SESSION_TIMEOUT=${SESSION_TIMEOUT:-3900}
+      - SESSION_COOKIE_NAME=${SESSION_COOKIE_NAME:-HAZCOM_SESSION}
+      - LOGGING_LEVEL_ROOT=${LOGGING_LEVEL_ROOT:-INFO}
+      - LOGGING_LEVEL_COM_HAZCOM=${LOGGING_LEVEL_COM_HAZCOM:-DEBUG}
+      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY=${LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY:-DEBUG}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/login"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
