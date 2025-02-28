@@ -1,5 +1,6 @@
 package com.hazcom.sso.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -7,12 +8,26 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.saml2.provider.service.registration.RelyingPartyRegistrationRepository;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.web.cors.CorsConfiguration;
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
     private final RelyingPartyRegistrationRepository relyingPartyRegistrationRepository;
+
+    @Value("${spring.security.cors.allowed-origins}")
+    private String allowedOrigins;
+
+    @Value("${spring.security.cors.allowed-methods}")
+    private String allowedMethods;
+
+    @Value("${spring.security.cors.allowed-headers}")
+    private String allowedHeaders;
+
+    @Value("${spring.security.cors.allow-credentials}")
+    private boolean allowCredentials;
 
     public SecurityConfig(RelyingPartyRegistrationRepository relyingPartyRegistrationRepository) {
         this.relyingPartyRegistrationRepository = relyingPartyRegistrationRepository;
@@ -25,6 +40,15 @@ public class SecurityConfig {
         successHandler.setAlwaysUseDefaultTargetUrl(true);
 
         http
+            .cors(cors -> cors.configurationSource(request -> {
+                CorsConfiguration config = new CorsConfiguration();
+                config.setAllowedOrigins(Arrays.asList(allowedOrigins.split(",")));
+                config.setAllowedMethods(Arrays.asList(allowedMethods.split(",")));
+                config.setAllowedHeaders(Arrays.asList(allowedHeaders.split(",")));
+                config.setAllowCredentials(allowCredentials);
+                return config;
+            }))
+            .csrf().disable()
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/", "/error", "/saml2/service-provider-metadata/**").permitAll()
                 .anyRequest().authenticated()
