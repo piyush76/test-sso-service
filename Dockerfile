@@ -5,21 +5,24 @@ FROM eclipse-temurin:17-jdk-alpine AS builder
 WORKDIR /app
 
 # Install necessary tools
-RUN apk add --no-cache curl
+RUN apk add --no-cache curl dos2unix
 
-# Copy Maven files
+# Copy Maven wrapper files first
 COPY .mvn/ .mvn/
-COPY mvnw mvnw.cmd pom.xml ./
-RUN chmod +x mvnw && ls -la .mvn/wrapper/
+COPY mvnw mvnw.cmd ./
+RUN chmod +x mvnw && \
+    dos2unix mvnw && \
+    ls -la .mvn/wrapper/
 
-# Download dependencies
-RUN ./mvnw dependency:go-offline
+# Copy POM file separately to cache dependencies
+COPY pom.xml ./
+RUN ./mvnw dependency:go-offline -B
 
 # Copy source code
 COPY src/ src/
 
 # Build the application
-RUN ./mvnw clean package -DskipTests
+RUN ./mvnw clean package -DskipTests -B
 
 # Create the final image
 FROM eclipse-temurin:17-jre-alpine
