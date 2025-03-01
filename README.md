@@ -1,4 +1,4 @@
-# Hazcom SSO Service Configuration Guide
+# Single Sign on Service Configuration Guide
 
 ## Environment Variables
 
