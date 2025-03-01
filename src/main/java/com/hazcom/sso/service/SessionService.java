@@ -4,22 +4,28 @@ import org.springframework.stereotype.Service;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.saml2.provider.service.authentication.Saml2Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class SessionService {
-    private final Map<String, Object> sessionStore = new ConcurrentHashMap<>();
+    private final SAMLUserDetailsService userDetailsService;
+    private final Map<String, UserDetails> sessionStore = new ConcurrentHashMap<>();
+
+    public SessionService(SAMLUserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
 
     public void createSession(Authentication authentication) {
         if (authentication instanceof Saml2Authentication) {
             Saml2Authentication saml2Auth = (Saml2Authentication) authentication;
-            String userId = saml2Auth.getName();
-            sessionStore.put(userId, saml2Auth.getAuthorities());
+            UserDetails userDetails = userDetailsService.extractUserDetails(saml2Auth);
+            sessionStore.put(saml2Auth.getName(), userDetails);
         }
     }
 
-    public Object getSessionData(String userId) {
+    public UserDetails getSessionData(String userId) {
         return sessionStore.get(userId);
     }
 

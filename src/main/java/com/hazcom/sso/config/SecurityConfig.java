@@ -60,6 +60,10 @@ public class SecurityConfig {
             )
             .saml2Logout(saml2 -> saml2
                 .logoutUrl("/logout/saml2/slo")
+            )
+            .sessionManagement(session -> session
+                .maximumSessions(1)
+                .expiredUrl("/login?expired")
             );
 
         return http.build();
