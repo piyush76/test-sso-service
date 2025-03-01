@@ -11,6 +11,12 @@ spring:
               credentials:
                 - private-key-location: classpath:saml/private.key
                   certificate-location: classpath:saml/public.cer
+    cors:
+      allowed-origins: ${CORS_ALLOWED_ORIGINS:https://app.maxcomsc.com}
+      allowed-methods: ${CORS_ALLOWED_METHODS:GET,POST,PUT,DELETE,OPTIONS}
+      allowed-headers: ${CORS_ALLOWED_HEADERS:*}
+      allow-credentials: ${CORS_ALLOW_CREDENTIALS:true}
+      max-age: ${CORS_MAX_AGE:3600}
 
   session:
     timeout: ${SESSION_TIMEOUT:3600}
@@ -21,6 +27,6 @@ spring:
 
 logging:
   level:
-    root: INFO
-    com.hazcom: DEBUG
-    org.springframework.security: DEBUG
+    root: ${LOGGING_LEVEL_ROOT:INFO}
+    com.hazcom: ${LOGGING_LEVEL_COM_HAZCOM:DEBUG}
+    org.springframework.security: ${LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY:DEBUG}
