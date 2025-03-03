@@ -5,14 +5,13 @@ FROM eclipse-temurin:17-jdk-alpine AS builder
 WORKDIR /app
 
 # Install necessary tools
-RUN apk add --no-cache curl dos2unix
+RUN apk add --no-cache curl dos2unix openssl
 
 # Copy Maven wrapper files first
 COPY .mvn/ .mvn/
 COPY mvnw mvnw.cmd ./
 RUN chmod +x mvnw && \
-    dos2unix mvnw && \
-    ls -la .mvn/wrapper/
+    dos2unix mvnw
 
 # Copy POM file separately to cache dependencies
 COPY pom.xml ./
@@ -30,6 +29,9 @@ FROM eclipse-temurin:17-jre-alpine
 # Add non-root user
 RUN addgroup -S spring && adduser -S spring -G spring
 
+# Install OpenSSL and keytool
+RUN apk add --no-cache openssl
+
 # Set working directory
 WORKDIR /app
 
@@ -38,12 +40,13 @@ RUN mkdir -p /app/saml && \
     chown -R spring:spring /app && \
     chmod 755 /app/saml
 
+# Copy certificate generation script
+COPY scripts/generate-certs.sh /app/
+RUN chmod +x /app/generate-certs.sh
+
 # Copy the built artifact
 COPY --from=builder /app/target/*.jar app.jar
 RUN chown spring:spring /app/app.jar
-
-# Switch to non-root user
-USER spring:spring
 
 # Switch to non-root user
 USER spring:spring
@@ -55,5 +58,5 @@ EXPOSE 8080
 ENV JAVA_OPTS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0"
 ENV SPRING_CONFIG_LOCATION=classpath:/application.yml
 
-# Run the application with environment variables
-ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
+# Generate certificates and start the application
+ENTRYPOINT ["/bin/sh", "-c", "/app/generate-certs.sh && java $JAVA_OPTS -jar app.jar"]
