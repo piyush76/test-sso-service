@@ -1,0 +1,75 @@
+<samlp:Response xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" ID="_affd76f1-5728-4495-900f-4ae30f458e12" Version="2.0" IssueInstant="2024-12-03T16:54:00.624Z" Destination="https://identity.thoughtspotlogin.cloud/sso/saml2/0oakgl0koiJkJWVBS697" InResponseTo="id19331967083383991095985694">
+<Issuer xmlns="urn:oasis:names:tc:SAML:2.0:assertion">https://sts.windows.net/2e319086-9a26-46a3-865f-615bed576786/</Issuer>
+<samlp:Status>
+<samlp:StatusCode Value="urn:oasis:names:tc:SAML:2.0:status:Success"/>
+</samlp:Status>
+<Assertion xmlns="urn:oasis:names:tc:SAML:2.0:assertion" ID="_52fcc370-f8e1-4f33-983e-1110b0286601" IssueInstant="2024-12-03T16:54:00.620Z" Version="2.0">
+<Issuer>https://sts.windows.net/2e319086-9a26-46a3-865f-615bed576786/</Issuer>
+<Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+<SignedInfo>
+<CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+<SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
+<Reference URI="#_52fcc370-f8e1-4f33-983e-1110b0286601">
+<Transforms>
+<Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+<Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+</Transforms>
+<DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<DigestValue>invalid</DigestValue>
+</Reference>
+</SignedInfo>
+<SignatureValue>YjEv9NADZAb5bb1PfsPczPWcMF7iZv0v5nB2OkGc8ScRAQ+KAn2Hx7J2KbYmy5AHcWxvKEQluvqwDShq9U6BGOXUBsSaSGgfPsdXAjTJMn/aV8WCSRvTWWamDAoSw1Z4LvQxtyzMzikTdPN6cp4JWUTf4HXJ+jBVaf+OuyR2IR34d8w1CJEngBZdCIgO4phz6hsLprpviW3uENP0vfsLnL27/Wfyq7WW+ebJ1imGCGN7OSAnsML6sF0aoN28VckY4A9kEVu/T5zbxBcRJonN26VjczR7Qy9vHjvW5R2pWZUSB4E8WCYd2uhFy2tRYKnGzByqTTwXqB85tyaUUBGelg==</SignatureValue>
+<KeyInfo>
+<X509Data>
+<X509Certificate>MIIC8DCCAdigAwIBAgIQEtsE9vIYJ4BD4kQg50bfSTANBgkqhkiG9w0BAQsFADA0MTIwMAYDVQQDEylNaWNyb3NvZnQgQXp1cmUgRmVkZXJhdGVkIFNTTyBDZXJ0aWZpY2F0ZTAeFw0yMjAzMTgxODMxMTNaFw0yNTAzMTgxODMxMTJaMDQxMjAwBgNVBAMTKU1pY3Jvc29mdCBBenVyZSBGZWRlcmF0ZWQgU1NPIENlcnRpZmljYXRlMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAoOzGIekVcELyXGQbMjmQLGVVWu78Jz2toVe5RRVXfeSGM2rLDFo24TM8u4dKAXxefTgHKyyhrKCwIA1pJ9IWOTnhiG63RZkGG2jakArMfZ0UXECNkpwLSlK5tQN7gvHLewU/UtHM76pfXcf4dv/BflDe7VLgjlT+6Xuz7kOs4vENgdzZDvmS3IMROj6+H1LINvxEHkbWKYZcGVb07XCcOTdQk7kK00JnkkrPollyKoOlu5f7W67NRRpeUBDE0hmQycSdMbJMqgoTzk/BcPEsD21GX4XOlUbThpM6jyt2rSvI2zflL0RdHfDuJ6Wu0UaA6cQCtkn7cABFZQPWEp6oTQIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQAE8n55ah+tI6vhCQF0AVorfFViwX7Y6C3vi2XCjGH+xEHBR1SW9+Sn0lRA/qLDtQcQ07H6VVbCrl9GoM10L4dv7UOXeCOSjqyzU/4fn+hdOMnP27mbBv7of96/Ey77wpqbFSy4xSPsG7km1GD2uzX3gs7N5S/DO3JBxglrLoEPbr70p/Nub/4wpdRMskpU3xwOOP9SqyQNEWPYf3CcbBp0eEbB5StJKLhjOjaooA5XkZCStsArx8PvWm72jMO0mNqLvovjf8ke9N1Rogo6MA4k8LFGI4z5w08fb4uR/ecpKFEe5jmF5uY2xTxe6JAixBureeS/AonrvyVjXCCf3kcR</X509Certificate>
+</X509Data>
+</KeyInfo>
+</Signature>
+<Subject>
+<NameID Format="urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress">testuser1@providence.org</NameID>
+<SubjectConfirmation Method="urn:oasis:names:tc:SAML:2.0:cm:bearer">
+<SubjectConfirmationData InResponseTo="id19331967083383991095985694" NotOnOrAfter="2024-12-03T17:54:00.493Z" Recipient="https://identity.thoughtspotlogin.cloud/sso/saml2/0oakgl0koiJkJWVBS697"/>
+</SubjectConfirmation>
+</Subject>
+<Conditions NotBefore="2024-12-03T16:49:00.493Z" NotOnOrAfter="2024-12-03T17:54:00.493Z">
+<AudienceRestriction>
+<Audience>https://www.okta.com/saml2/service-provider/spkqzpbglltlxxlfdoyo</Audience>
+</AudienceRestriction>
+</Conditions>
+<AttributeStatement>
+<Attribute Name="http://schemas.microsoft.com/identity/claims/tenantid">
+<AttributeValue>2e319086-9a26-46a3-865f-615bed576786</AttributeValue>
+</Attribute>
+<Attribute Name="http://schemas.microsoft.com/identity/claims/objectidentifier">
+<AttributeValue>3ea77e9d-3b79-433e-b1da-caa12646e573</AttributeValue>
+</Attribute>
+<Attribute Name="http://schemas.microsoft.com/identity/claims/identityprovider">
+<AttributeValue>https://sts.windows.net/2e319086-9a26-46a3-865f-615bed576786/</AttributeValue>
+</Attribute>
+<Attribute Name="http://schemas.microsoft.com/claims/authnmethodsreferences">
+<AttributeValue>http://schemas.microsoft.com/ws/2008/06/identity/authenticationmethod/x509</AttributeValue>
+<AttributeValue>http://schemas.microsoft.com/claims/multipleauthn</AttributeValue>
+</Attribute>
+<Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname">
+<AttributeValue>test</AttributeValue>
+</Attribute>
+<Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname">
+<AttributeValue>user</AttributeValue>
+</Attribute>
+<Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name">
+<AttributeValue>testuser1@providence.org</AttributeValue>
+</Attribute>
+<Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/mail">
+<AttributeValue>testuser1@providence.org</AttributeValue>
+</Attribute>
+<Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/displayName">
+<AttributeValue>user1, test</AttributeValue>
+</Attribute>
+</AttributeStatement>
+<AuthnStatement AuthnInstant="2024-12-03T16:50:40.890Z" SessionIndex="_52fcc370-f8e1-4f33-983e-1110b0286601">
+<AuthnContext>
+<AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:Unspecified</AuthnContextClassRef>
+</AuthnContext>
+</AuthnStatement>
+</Assertion>
+</samlp:Response>
