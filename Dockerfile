@@ -21,6 +21,41 @@ RUN ./mvnw dependency:go-offline -B
 COPY src/ src/
 COPY scripts/ scripts/
 
+# Generate SAML certificates during build
+RUN mkdir -p src/main/resources/saml && \
+    keytool -genkeypair \
+    -alias hazcom \
+    -keyalg RSA \
+    -keysize 2048 \
+    -storetype PKCS12 \
+    -keystore src/main/resources/saml/keystore.jks \
+    -validity 3650 \
+    -storepass changeit \
+    -keypass changeit \
+    -dname "CN=Hazcom SSO Service, OU=IT, O=Hazcom, L=Unknown, ST=Unknown, C=US" && \
+    keytool -exportcert \
+    -alias hazcom \
+    -keystore src/main/resources/saml/keystore.jks \
+    -storepass changeit \
+    -file src/main/resources/saml/public.cer \
+    -rfc && \
+    keytool -importkeystore \
+    -srckeystore src/main/resources/saml/keystore.jks \
+    -srcstorepass changeit \
+    -srckeypass changeit \
+    -srcalias hazcom \
+    -destkeystore src/main/resources/saml/keystore.p12 \
+    -deststoretype PKCS12 \
+    -deststorepass changeit \
+    -destkeypass changeit && \
+    openssl pkcs12 -in src/main/resources/saml/keystore.p12 \
+    -nodes \
+    -nocerts \
+    -passin pass:changeit \
+    | openssl pkcs8 -topk8 -nocrypt > src/main/resources/saml/private.key && \
+    chmod 600 src/main/resources/saml/private.key && \
+    chmod 644 src/main/resources/saml/public.cer
+
 # Build the application
 RUN ./mvnw clean package -DskipTests -B
 
@@ -30,24 +65,13 @@ FROM eclipse-temurin:17-jre-alpine
 # Add non-root user
 RUN addgroup -S spring && adduser -S spring -G spring
 
-# Install OpenSSL and keytool
-RUN apk add --no-cache openssl
-
 # Set working directory
 WORKDIR /app
 
-# Create SAML directory and set permissions
-RUN mkdir -p /app/saml && \
-    chown -R spring:spring /app && \
-    chmod 755 /app/saml
-
-# Copy certificate generation script
-COPY --from=builder /app/scripts/generate-certs.sh /app/
-RUN chmod +x /app/generate-certs.sh
-
-# Copy the built artifact
+# Copy the built artifact and SAML resources
 COPY --from=builder /app/target/*.jar app.jar
-RUN chown spring:spring /app/app.jar
+COPY --from=builder /app/src/main/resources/saml /app/src/main/resources/saml
+RUN chown -R spring:spring /app
 
 # Switch to non-root user
 USER spring:spring
@@ -59,5 +83,5 @@ EXPOSE 8080
 ENV JAVA_OPTS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0"
 ENV SPRING_CONFIG_LOCATION=classpath:/application.yml
 
-# Generate certificates and start the application
-ENTRYPOINT ["/bin/sh", "-c", "/app/generate-certs.sh && java $JAVA_OPTS -jar app.jar"]
+# Start the application
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]

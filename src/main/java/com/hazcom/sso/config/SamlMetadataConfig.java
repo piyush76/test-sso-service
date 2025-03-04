@@ -25,7 +25,7 @@ public class SamlMetadataConfig {
     public RelyingPartyRegistrationRepository relyingPartyRegistrationRepository() throws Exception {
         String metadataUrl = "https://sts.windows.net/2e319086-9a26-46a3-865f-615bed576786/federationmetadata/2007-06/federationmetadata.xml";
         
-        // Load signing certificate and private key
+        // Load signing certificate and private key from classpath
         ClassPathResource certResource = new ClassPathResource("saml/public.cer");
         ClassPathResource keyResource = new ClassPathResource("saml/private.key");
         
