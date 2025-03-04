@@ -21,40 +21,13 @@ RUN ./mvnw dependency:go-offline -B
 COPY src/ src/
 COPY scripts/ scripts/
 
-# Generate SAML certificates during build
-RUN mkdir -p src/main/resources/saml && \
-    keytool -genkeypair \
-    -alias hazcom \
-    -keyalg RSA \
-    -keysize 2048 \
-    -storetype PKCS12 \
-    -keystore src/main/resources/saml/keystore.jks \
-    -validity 3650 \
-    -storepass changeit \
-    -keypass changeit \
-    -dname "CN=Hazcom SSO Service, OU=IT, O=Hazcom, L=Unknown, ST=Unknown, C=US" && \
-    keytool -exportcert \
-    -alias hazcom \
-    -keystore src/main/resources/saml/keystore.jks \
-    -storepass changeit \
-    -file src/main/resources/saml/public.cer \
-    -rfc && \
-    keytool -importkeystore \
-    -srckeystore src/main/resources/saml/keystore.jks \
-    -srcstorepass changeit \
-    -srckeypass changeit \
-    -srcalias hazcom \
-    -destkeystore src/main/resources/saml/keystore.p12 \
-    -deststoretype PKCS12 \
-    -deststorepass changeit \
-    -destkeypass changeit && \
-    openssl pkcs12 -in src/main/resources/saml/keystore.p12 \
-    -nodes \
-    -nocerts \
-    -passin pass:changeit \
-    | openssl pkcs8 -topk8 -nocrypt > src/main/resources/saml/private.key && \
-    chmod 600 src/main/resources/saml/private.key && \
-    chmod 644 src/main/resources/saml/public.cer
+# Make script executable and generate certificates
+RUN chmod +x scripts/generate-certs.sh && \
+    scripts/generate-certs.sh \
+    "/app/src/main/resources/saml/keystore.jks" \
+    "/app/src/main/resources/saml/public.cer" \
+    "/app/src/main/resources/saml/private.key" \
+    "/app/src/main/resources/saml/keystore.p12"
 
 # Build the application
 RUN ./mvnw clean package -DskipTests -B
