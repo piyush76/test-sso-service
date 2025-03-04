@@ -17,8 +17,9 @@ RUN chmod +x mvnw && \
 COPY pom.xml ./
 RUN ./mvnw dependency:go-offline -B
 
-# Copy source code
+# Copy source code and scripts
 COPY src/ src/
+COPY scripts/ scripts/
 
 # Build the application
 RUN ./mvnw clean package -DskipTests -B
@@ -41,7 +42,7 @@ RUN mkdir -p /app/saml && \
     chmod 755 /app/saml
 
 # Copy certificate generation script
-COPY scripts/generate-certs.sh /app/
+COPY --from=builder /app/scripts/generate-certs.sh /app/
 RUN chmod +x /app/generate-certs.sh
 
 # Copy the built artifact
