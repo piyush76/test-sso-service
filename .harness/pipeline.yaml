@@ -1,0 +1,82 @@
+pipeline:
+  name: sso-service-pipeline
+  identifier: sso_service_pipeline
+  projectIdentifier: hazcom
+  orgIdentifier: default
+  tags: {}
+  stages:
+    - stage:
+        name: Build
+        identifier: Build
+        type: CI
+        spec:
+          cloneCodebase: true
+          infrastructure:
+            type: KubernetesDirect
+            spec:
+              connectorRef: account.dockerhub
+              namespace: harness-build
+              automountServiceAccountToken: true
+              nodeSelector: {}
+              os: Linux
+          execution:
+            steps:
+              - step:
+                  type: Run
+                  name: Generate SAML Certificates
+                  identifier: generate_certs
+                  spec:
+                    connectorRef: account.dockerhub
+                    image: eclipse-temurin:17-jdk-alpine
+                    command: |-
+                      apk add --no-cache openssl
+                      chmod +x scripts/generate-certs.sh
+                      ./scripts/generate-certs.sh
+              - step:
+                  type: Run
+                  name: Build Docker Image
+                  identifier: build_docker
+                  spec:
+                    connectorRef: account.dockerhub
+                    image: docker:dind
+                    command: |-
+                      docker build -t ${DOCKER_REGISTRY}/hazcom/sso-service:${BUILD_NUMBER} .
+                      docker push ${DOCKER_REGISTRY}/hazcom/sso-service:${BUILD_NUMBER}
+    - stage:
+        name: Deploy
+        identifier: Deploy
+        type: Deployment
+        spec:
+          infrastructure:
+            environmentRef: prod
+            infrastructureDefinition:
+              type: KubernetesDirect
+              spec:
+                connectorRef: account.k8sCluster
+                namespace: hazcom
+                releaseName: sso-service
+          execution:
+            steps:
+              - step:
+                  type: K8sRollingDeploy
+                  name: Rolling Deploy
+                  identifier: rollingDeploy
+                  spec:
+                    skipDryRun: false
+                    manifests:
+                      - manifest:
+                          identifier: deployment
+                          type: K8sManifest
+                          spec:
+                            store:
+                              type: Github
+                              spec:
+                                connectorRef: account.github
+                                gitFetchType: Branch
+                                paths:
+                                  - k8s/deployment.yaml
+                                branch: main
+                    variables:
+                      - name: image
+                        type: String
+                        value: ${DOCKER_REGISTRY}/hazcom/sso-service:${BUILD_NUMBER}
