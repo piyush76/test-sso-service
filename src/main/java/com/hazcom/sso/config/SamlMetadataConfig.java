@@ -23,7 +23,8 @@ public class SamlMetadataConfig {
     
     @Bean
     public RelyingPartyRegistrationRepository relyingPartyRegistrationRepository() throws Exception {
-        String metadataUrl = "https://idp.ssocircle.com:443/sso/idp/metadata";
+        // Load metadata from classpath resource
+        ClassPathResource metadataResource = new ClassPathResource("saml/ssocircle-metadata.xml");
         
         // Load signing certificate and private key from classpath
         ClassPathResource certResource = new ClassPathResource("saml/public.cer");
@@ -51,7 +52,7 @@ public class SamlMetadataConfig {
         Saml2X509Credential signingCredential = Saml2X509Credential.signing(privateKey, certificate);
         
         var registration = RelyingPartyRegistrations
-            .fromMetadataLocation(metadataUrl)
+            .fromMetadataLocation(metadataResource.getURL().toString())
             .registrationId("hazcom")
             .signingX509Credentials(c -> c.add(signingCredential))
             .entityId("https://idp.ssocircle.com")

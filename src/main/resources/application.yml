@@ -13,9 +13,12 @@ spring:
                   certificate-location: classpath:saml/public.cer
             identityprovider:
               entity-id: https://idp.ssocircle.com
-              verification:
-                credentials:
-                  - certificate-location: classpath:saml/ssocircle.cer
+              singlesignon:
+                url: https://idp.ssocircle.com:443/sso/SSORedirect/metaAlias/publicidp
+                binding: urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect
+              singlelogout:
+                url: https://idp.ssocircle.com:443/sso/IDPSloRedirect/metaAlias/publicidp
+                binding: urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect
     cors:
       allowed-origins: ${CORS_ALLOWED_ORIGINS:https://app.maxcomsc.com}
       allowed-methods: ${CORS_ALLOWED_METHODS:GET,POST,PUT,DELETE,OPTIONS}
