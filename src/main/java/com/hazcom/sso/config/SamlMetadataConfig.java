@@ -23,7 +23,7 @@ public class SamlMetadataConfig {
     
     @Bean
     public RelyingPartyRegistrationRepository relyingPartyRegistrationRepository() throws Exception {
-        String metadataUrl = "https://idp.ssocircle.com";
+        String metadataUrl = "https://idp.ssocircle.com:443/sso/idp/metadata";
         
         // Load signing certificate and private key from classpath
         ClassPathResource certResource = new ClassPathResource("saml/public.cer");
