@@ -44,7 +44,11 @@ WORKDIR /app
 # Copy the built artifact and SAML resources
 COPY --from=builder /app/target/*.jar app.jar
 COPY --from=builder /app/src/main/resources/saml /app/src/main/resources/saml
-RUN chown -R spring:spring /app
+
+# Create and set permissions for logs directory
+RUN mkdir -p /logs && \
+    chown -R spring:spring /app /logs && \
+    chmod 755 /logs
 
 # Switch to non-root user
 USER spring:spring

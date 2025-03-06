@@ -36,7 +36,13 @@ spring:
       http-only: true
 
 logging:
+  file:
+    name: ${LOG_FILE_PATH:/logs/sso-service.log}
+    max-size: ${LOG_FILE_MAX_SIZE:10MB}
+    max-history: ${LOG_FILE_MAX_HISTORY:7}
   level:
     root: ${LOGGING_LEVEL_ROOT:INFO}
     com.hazcom: ${LOGGING_LEVEL_COM_HAZCOM:DEBUG}
     org.springframework.security: ${LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY:DEBUG}
+  pattern:
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
