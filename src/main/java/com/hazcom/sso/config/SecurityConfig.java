@@ -53,21 +53,21 @@ public class SecurityConfig {
             }))
             .csrf().disable()
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/", "/error", "/saml2/service-provider-metadata/**").permitAll()
+                .requestMatchers("/maxcomsc", "/maxcomsc/error", "/maxcomsc/saml2/service-provider-metadata/**").permitAll()
                 .anyRequest().authenticated()
             )
             .saml2Login(saml2 -> saml2
                 .relyingPartyRegistrationRepository(relyingPartyRegistrationRepository)
-                .loginProcessingUrl("/login/saml2/sso/{registrationId}")
+                .loginProcessingUrl("/maxcomsc/login/saml2/sso/{registrationId}")
                 .successHandler(successHandler)
                 .failureHandler(failureHandler)
             )
             .saml2Logout(saml2 -> saml2
-                .logoutUrl("/logout/saml2/slo")
+                .logoutUrl("/maxcomsc/logout/saml2/slo")
             )
             .sessionManagement(session -> session
                 .maximumSessions(1)
-                .expiredUrl("/login?expired")
+                .expiredUrl("/maxcomsc/login?expired")
             );
 
         return http.build();
