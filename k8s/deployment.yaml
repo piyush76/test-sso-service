@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sso-service
+  namespace: hazcom
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: sso-service
+  template:
+    metadata:
+      labels:
+        app: sso-service
+    spec:
+      containers:
+        - name: sso-service
+          image: ${image}
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SAML_IDP_METADATA_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: sso-config
+                  key: saml.idp.metadata.url
+            - name: SAML_SP_ENTITY_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: sso-config
+                  key: saml.sp.entity.id
+            - name: SAML_SP_ACS_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: sso-config
+                  key: saml.sp.acs.url
+            - name: SAML_KEYSTORE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: sso-secrets
+                  key: saml.keystore.password
+            - name: SAML_PRIVATE_KEY_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: sso-secrets
+                  key: saml.private.key.password
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sso-service
+  namespace: hazcom
+spec:
+  selector:
+    app: sso-service
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: ClusterIP

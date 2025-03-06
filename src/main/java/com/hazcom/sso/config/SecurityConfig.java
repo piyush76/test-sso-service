@@ -9,6 +9,7 @@ import org.springframework.security.saml2.provider.service.registration.RelyingP
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.web.cors.CorsConfiguration;
+import com.hazcom.sso.security.AuthenticationExceptionHandler;
 import java.util.Arrays;
 
 @Configuration
@@ -39,6 +40,8 @@ public class SecurityConfig {
         successHandler.setDefaultTargetUrl("https://app.maxcomsc.com/maxcomsc");
         successHandler.setAlwaysUseDefaultTargetUrl(true);
 
+        AuthenticationExceptionHandler failureHandler = new AuthenticationExceptionHandler();
+
         http
             .cors(cors -> cors.configurationSource(request -> {
                 CorsConfiguration config = new CorsConfiguration();
@@ -57,6 +60,7 @@ public class SecurityConfig {
                 .relyingPartyRegistrationRepository(relyingPartyRegistrationRepository)
                 .loginProcessingUrl("/login/saml2/sso/{registrationId}")
                 .successHandler(successHandler)
+                .failureHandler(failureHandler)
             )
             .saml2Logout(saml2 -> saml2
                 .logoutUrl("/logout/saml2/slo")

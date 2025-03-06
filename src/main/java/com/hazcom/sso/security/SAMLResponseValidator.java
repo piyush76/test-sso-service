@@ -13,9 +13,15 @@ public class SAMLResponseValidator {
             throw new Saml2AuthenticationException(new Saml2Error("invalid_response", "SAML response validation failed"));
         }
 
-        // Additional custom validations can be added here
-        if (!authentication.getName().contains("@")) {
-            throw new Saml2AuthenticationException(new Saml2Error("invalid_user", "Invalid user identifier format"));
+        // Validate email format for SSO Circle responses
+        String email = authentication.getName();
+        if (!email.contains("@")) {
+            throw new Saml2AuthenticationException(new Saml2Error("invalid_user", "Invalid email format from SSO Circle"));
+        }
+
+        // Additional SSO Circle specific validations
+        if (authentication.getAuthorities().isEmpty()) {
+            throw new Saml2AuthenticationException(new Saml2Error("invalid_attributes", "No roles/authorities found in SAML response"));
         }
     }
 }
