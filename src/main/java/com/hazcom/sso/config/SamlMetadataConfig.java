@@ -23,7 +23,7 @@ public class SamlMetadataConfig {
     
     @Bean
     public RelyingPartyRegistrationRepository relyingPartyRegistrationRepository() throws Exception {
-        String metadataUrl = "https://sts.windows.net/2e319086-9a26-46a3-865f-615bed576786/federationmetadata/2007-06/federationmetadata.xml";
+        String metadataUrl = "https://idp.ssocircle.com";
         
         // Load signing certificate and private key from classpath
         ClassPathResource certResource = new ClassPathResource("saml/public.cer");
@@ -54,7 +54,7 @@ public class SamlMetadataConfig {
             .fromMetadataLocation(metadataUrl)
             .registrationId("hazcom")
             .signingX509Credentials(c -> c.add(signingCredential))
-            .entityId("https://app.maxcomsc.com/maxcomsc")
+            .entityId("https://idp.ssocircle.com")
             .assertionConsumerServiceLocation("https://app.maxcomsc.com/maxcomsc/login/saml2/sso/hazcom")
             .build();
             
